@@ -13,6 +13,7 @@ public class WheelControl : MonoBehaviour
     // Editor Inspector window)
     public bool steerable;
     public bool motorized;
+    private float firstPosition;
 
     Vector3 position;
     Quaternion rotation;
@@ -21,6 +22,8 @@ public class WheelControl : MonoBehaviour
     private void Start()
     {
         WheelCollider = GetComponent<WheelCollider>();
+        firstPosition = WheelCollider.transform.position.y;
+
     }
 
     // Update is called once per frame
@@ -29,8 +32,11 @@ public class WheelControl : MonoBehaviour
         // Get the Wheel collider's world pose values and
         // use them to set the wheel model's position and rotation
         WheelCollider.GetWorldPose(out position, out rotation);
+        float positionChange = firstPosition - position.y;
+        //wheelModel.transform.position.Set(wheelModel.transform.position.x, firstPosition + positionChange, wheelModel.transform.position.z);
         wheelModel.transform.position = position;
         wheelModel.transform.rotation = rotation;
-        //wheelModel.Rotate(0f, 0f, 90f, Space.Self);
+        //wheelModel.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
+        //wheelModel.Rotate(rotation.x, rotation.y, rotation.z, Space.Self);
     }
 }
