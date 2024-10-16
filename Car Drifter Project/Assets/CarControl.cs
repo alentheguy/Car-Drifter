@@ -10,17 +10,15 @@ public class CarControl : MonoBehaviour
     public float maxSpeed = 1;
     public float steeringRange = 30;
     public float steeringRangeAtMaxSpeed = 10;
-    public float centreOfGravityOffset = -1f;
-    //public int[] gears = { 0, 1, 2, 3, 4, 5, 6 };
-    //public float[] gearSpeed = { 0, 0, 0, 0, 0, 0, 0 };
-    //public float[] gearTorque = { 0, 0, 0, 0, 0, 0, 0 };
-    //public int gear;
+    public float centreOfGravityOffset = 0;
     public float curSpeed;
     public float brakeTime = 0.5f;
     private float nextBrake = 0f;
     private float stopBrake = 0f;
     public float torqueRN = 0f;
     public float returnedTorque = 0f;
+    public float braking = 0f;
+    public bool accelerating = false;
 
     WheelControl[] wheels;
     Rigidbody rigidBody;
@@ -35,23 +33,6 @@ public class CarControl : MonoBehaviour
 
         // Find all child GameObjects that have the WheelControl script attached
         wheels = GetComponentsInChildren<WheelControl>();
-
-        //gear = 2;
-        //gearSpeed[0] = maxSpeed / 2;
-        //float curSpeed = 0;
-        //for (int i = 2; i <= 6; i++)
-        //{
-        //    curSpeed += maxSpeed / 5;
-        //    gearSpeed[i] = curSpeed;
-        //}
-        //gearTorque[0] = motorTorque;
-        //float curTorque = motorTorque;
-        //gearTorque[2] = curTorque;
-        //for (int i = 3; i <= 6; i++)
-        //{
-        //    curTorque -= motorTorque / 6;
-        //    gearTorque[i] = curTorque;
-        //}
     }
 
     public float getTorque(float speed)
@@ -109,7 +90,6 @@ public class CarControl : MonoBehaviour
         {
             stopBrake = Time.time + (brakeTime / 1.5f);
             nextBrake = Time.time + brakeTime;
-
         }
         else
         {
@@ -132,30 +112,19 @@ public class CarControl : MonoBehaviour
         // Calculate how close the car is to top speed
         // as a number from zero to one
         float speedFactor = Mathf.InverseLerp(0, maxSpeed, forwardSpeed);
-        float speedFactorB = Mathf.InverseLerp(0, maxSpeed/2, -forwardSpeed);
 
         // Use that to calculate how much torque is available 
         // (zero torque at top speed)
         float currentMotorTorque = getTorque(forwardSpeed);
-        float currentMotorTorqueB = Mathf.Lerp(motorTorque, 0, speedFactorB);
 
         // …and to calculate how much to steer 
         // (the car steers more gently at top speed)
         float currentSteerRange = Mathf.Lerp(steeringRange, steeringRangeAtMaxSpeed, speedFactor);
         //float currentSteerRange = steeringRange;
 
-        // Check whether the user input is in the same direction               
-        // as the car's velocity             
-        //if ((float)Math.Round(forwardSpeed, 0) == 0f && Mathf.Sign(vInput) == Mathf.Sign(-1))
-        //{
-        //    gear = 0;
-        //}
-        //if ((float)Math.Round(forwardSpeed, 0) == 0f && Mathf.Sign(vInput) == Mathf.Sign(1))
-        //{
-        //    gear = 2;
-        //}
         bool isAccelerating = (Mathf.Sign(vInput) == Mathf.Sign(forwardSpeed));
-        bool isAcceleratingB = (Mathf.Sign(vInput) == Mathf.Sign(forwardSpeed));
+
+        accelerating = isAccelerating;
 
 
         float avgrpm = 0f;
@@ -163,7 +132,6 @@ public class CarControl : MonoBehaviour
 
         foreach (var wheel in wheels)
         {
-            wheel.WheelCollider.brakeTorque = 0;
             float rpm = wheel.WheelCollider.rpm;
             // Apply steering to Wheel colliders that have "Steerable" enabled
             if (wheel.steerable)
@@ -188,40 +156,30 @@ public class CarControl : MonoBehaviour
                     else
                     {
                         wheel.WheelCollider.motorTorque = vInput * tractionControl(currentMotorTorque, wheel);
-                        avgtorque += vInput * tractionControl(currentMotorTorque, wheel);
+                    }
+                    if(Mathf.Abs(wheel.WheelCollider.rpm) > 1000)
+                    {
+                        wheel.WheelCollider.motorTorque = 0;
                     }
                 }
                 wheel.WheelCollider.brakeTorque = 0;
             }
-            //else if (isAcceleratingB)
-            //{
-                // Apply torque to Wheel colliders that have "Motorized" enabled
-            //    if (wheel.motorized)
-            //    {
-            //        wheel.WheelCollider.motorTorque = vInput * currentMotorTorqueB;
-            //    }
-            //    wheel.WheelCollider.brakeTorque = 0;
-            //}
             else
             {
                 // If the user is trying to go in the opposite direction
                 // apply brakes to all wheels
-                wheel.WheelCollider.brakeTorque = Mathf.Abs(vInput) * antilockBrakeSystem(brakeTorque, wheel);
                 wheel.WheelCollider.motorTorque = 0;
+                wheel.WheelCollider.brakeTorque = Mathf.Abs(vInput) * antilockBrakeSystem(brakeTorque, wheel);
+                braking = Mathf.Abs(vInput) * antilockBrakeSystem(brakeTorque, wheel);
             }
             wheel.WheelCollider.GetGroundHit(out WheelHit wh);
             WheelFrictionCurve side_ = wheel.WheelCollider.sidewaysFriction;
-            side_.stiffness = 1f - (Mathf.Abs(wh.forwardSlip) * wheel.WheelCollider.forwardFriction.stiffness / 2);
-            if (Input.GetKey(KeyCode.LeftShift))
+            side_.stiffness = 1f - (Mathf.Abs(wh.forwardSlip) / 2);
+            if (Input.GetKey(KeyCode.LeftShift) && wheel.motorized)
             {
-                side_.stiffness /= 2;//----------------------------------------------------------------------------------------set to only motorized ones
+                side_.stiffness /= 1.25f;
             }
-
-            //wheel.WheelCollider.sidewaysFriction = side_;
-            //WheelFrictionCurve forward_ = wheel.WheelCollider.forwardFriction;
-            //forward_.stiffness = 1f - (Mathf.Abs(wh.sidewaysSlip) * wheel.WheelCollider.sidewaysFriction.stiffness);
-            //wheel.WheelCollider.forwardFriction = forward_;
-
+            avgtorque += wheel.WheelCollider.motorTorque;
         }
         avgrpm /= 2;
         torqueRN = avgtorque / 2;
@@ -229,26 +187,5 @@ public class CarControl : MonoBehaviour
         float speedOnKmh = (circumFerence * avgrpm) / 100; // finding kmh
         float speedOnMph = speedOnKmh;// * 0.62f; // converting kmh to mph
         curSpeed = speedOnMph;
-
-        //if (speedOnMph <= gearSpeed[2] && gear > 1)
-        //{
-        //    gear = 2;
-        //}
-        //else if (speedOnMph <= gearSpeed[3] && gear > 1)
-        //{
-        //    gear = 3;
-        //}
-        //else if (speedOnMph <= gearSpeed[4] && gear > 1)
-        //{
-        //   gear = 4;
-        //}
-        //else if (speedOnMph <= gearSpeed[5] && gear > 1)
-        //{
-        //    gear = 5;
-        //}
-        //else if (speedOnMph <= gearSpeed[6] && gear > 1)
-        //{
-        //    gear = 6;
-        //}
     }
 }
