@@ -11,6 +11,8 @@ public class CarControl : MonoBehaviour
     public float steeringRange = 30;
     public float steeringRangeAtMaxSpeed = 10;
     public float centreOfGravityOffset = 0;
+    public Camera firstPerson;
+    public Camera thirdPerson;
     public float curSpeed;
     public float brakeTime = 0.5f;
     private float nextBrake = 0f;
@@ -33,6 +35,10 @@ public class CarControl : MonoBehaviour
 
         // Find all child GameObjects that have the WheelControl script attached
         wheels = GetComponentsInChildren<WheelControl>();
+
+        // Start with third person camera
+        thirdPerson.enabled = true;
+        firstPerson.enabled = false;
     }
 
     public float getTorque(float speed)
@@ -101,6 +107,11 @@ public class CarControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+                firstPerson.enabled = !firstPerson.enabled;
+                thirdPerson.enabled = !thirdPerson.enabled;
+        }
 
         float vInput = Input.GetAxis("Vertical");
         float hInput = Input.GetAxis("Horizontal");

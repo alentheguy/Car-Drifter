@@ -925,7 +925,7 @@ GameObject:
   - component: {fileID: 284871789}
   - component: {fileID: 284871788}
   m_Layer: 0
-  m_Name: Camera
+  m_Name: FirstCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4088,7 +4088,7 @@ GameObject:
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: ThirdCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4161,8 +4161,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.16018225, y: 0.0000007453901, z: -0.00000012096015, w: 0.9870875}
-  m_LocalPosition: {x: 37.79189, y: 13.972279, z: 1.8808322}
+  m_LocalRotation: {x: 0.16018225, y: 0.00000076237427, z: -0.00000012371633, w: 0.9870875}
+  m_LocalPosition: {x: 37.79189, y: 13.972279, z: 1.8808317}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8951,6 +8951,8 @@ MonoBehaviour:
   steeringRange: 40
   steeringRangeAtMaxSpeed: 10
   centreOfGravityOffset: -1
+  firstPerson: {fileID: 284871789}
+  thirdPerson: {fileID: 963194227}
   curSpeed: 0
   brakeTime: 0.05
   torqueRN: 0
