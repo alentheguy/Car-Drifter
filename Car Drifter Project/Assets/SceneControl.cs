@@ -14,4 +14,14 @@ public class SceneControl : MonoBehaviour
     {
         SceneManager.LoadScene("MainMenu");
     }
+
+    public void Zen()
+    {
+        SceneManager.LoadScene("Zen");
+    }
+
+    public void Edit()
+    {
+        SceneManager.LoadScene("Edit");
+    }
 }

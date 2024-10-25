@@ -12,7 +12,10 @@ public class CarControl : MonoBehaviour
     public float steeringRangeAtMaxSpeed = 10;
     public float centreOfGravityOffset = 0;
     public Camera firstPerson;
+    public AudioListener firstPersonA;
     public Camera thirdPerson;
+    public AudioListener thirdPersonA;
+    public ParticleSystem smoke;
     public float curSpeed;
     public float brakeTime = 0.5f;
     private float nextBrake = 0f;
@@ -21,13 +24,16 @@ public class CarControl : MonoBehaviour
     public float returnedTorque = 0f;
     public float braking = 0f;
     public bool accelerating = false;
+    public Color smokeColor;
 
     WheelControl[] wheels;
     Rigidbody rigidBody;
+    ParticleSystem.MainModule main;
 
     // Start is called before the first frame update
     void Start()
     {
+        main = GetComponent<ParticleSystem>().main;
         rigidBody = GetComponent<Rigidbody>();
 
         // Adjust center of mass vertically, to help prevent the car from rolling
@@ -38,12 +44,14 @@ public class CarControl : MonoBehaviour
 
         // Start with third person camera
         thirdPerson.enabled = true;
+        thirdPersonA.enabled = true;
         firstPerson.enabled = false;
+        firstPersonA.enabled = false;
     }
 
     public float getTorque(float speed)
     {
-        float curTorque = ((0.002f * maxSpeed * motorTorque) / (0.02f * (speed - (maxSpeed / 20f)))) + (motorTorque / 10);
+        float curTorque = ((0.1f * maxSpeed * motorTorque) / (speed - (maxSpeed / 20f))) * ((-1 * (float)Math.Pow((speed / maxSpeed), 10f)) + 1);
         if (curTorque > motorTorque || curTorque < 0f)
         {
             returnedTorque = motorTorque;
@@ -57,17 +65,13 @@ public class CarControl : MonoBehaviour
     {
         float mtf;
         wheel.WheelCollider.GetGroundHit(out WheelHit f);
-        if (f.forwardSlip < 0)
-        {
-            mtf = mt;
-        }
-        else if (f.forwardSlip >= 0.5f)
+        if (Math.Abs(f.forwardSlip) >= 0.25f)
         {
             mtf = 0f;
         }
         else
         {
-            mtf = Mathf.Lerp(mt, 0, f.forwardSlip * 2);
+            mtf = Mathf.Lerp(mt, 0, f.forwardSlip * 4);
         }
 
         return mtf;
@@ -109,8 +113,10 @@ public class CarControl : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.C))
         {
-                firstPerson.enabled = !firstPerson.enabled;
-                thirdPerson.enabled = !thirdPerson.enabled;
+            firstPerson.enabled = !firstPerson.enabled;
+            thirdPerson.enabled = !thirdPerson.enabled;
+            firstPersonA.enabled = !firstPersonA.enabled;
+            thirdPersonA.enabled = !thirdPersonA.enabled;
         }
 
         float vInput = Input.GetAxis("Vertical");
@@ -138,21 +144,17 @@ public class CarControl : MonoBehaviour
         accelerating = isAccelerating;
 
 
-        float avgrpm = 0f;
         float avgtorque = 0f;
+        float avgSlip = 0f;
 
         foreach (var wheel in wheels)
         {
             float rpm = wheel.WheelCollider.rpm;
+            wheel.WheelCollider.GetGroundHit(out WheelHit wh);
             // Apply steering to Wheel colliders that have "Steerable" enabled
             if (wheel.steerable)
             {
                 wheel.WheelCollider.steerAngle = hInput * currentSteerRange;
-            }
-
-            if (wheel.motorized)
-            {
-                avgrpm += rpm;
             }
 
             if (isAccelerating)
@@ -168,10 +170,11 @@ public class CarControl : MonoBehaviour
                     {
                         wheel.WheelCollider.motorTorque = vInput * tractionControl(currentMotorTorque, wheel);
                     }
-                    if(Mathf.Abs(wheel.WheelCollider.rpm) > 1000)
-                    {
-                        wheel.WheelCollider.motorTorque = 0;
-                    }
+                    avgSlip += wh.forwardSlip;
+                    //if(Mathf.Abs(wheel.WheelCollider.rpm) > 1000)
+                    //{
+                    //    wheel.WheelCollider.motorTorque = 0;
+                    //}
                 }
                 wheel.WheelCollider.brakeTorque = 0;
             }
@@ -183,7 +186,6 @@ public class CarControl : MonoBehaviour
                 wheel.WheelCollider.brakeTorque = Mathf.Abs(vInput) * antilockBrakeSystem(brakeTorque, wheel);
                 braking = Mathf.Abs(vInput) * antilockBrakeSystem(brakeTorque, wheel);
             }
-            wheel.WheelCollider.GetGroundHit(out WheelHit wh);
             WheelFrictionCurve side_ = wheel.WheelCollider.sidewaysFriction;
             side_.stiffness = 1f - (Mathf.Abs(wh.forwardSlip) / 2);
             if (Input.GetKey(KeyCode.LeftShift) && wheel.motorized)
@@ -192,11 +194,10 @@ public class CarControl : MonoBehaviour
             }
             avgtorque += wheel.WheelCollider.motorTorque;
         }
-        avgrpm /= 2;
-        torqueRN = avgtorque / 2;
-        float circumFerence = 2.0f * 3.14f * 0.375f; // Finding circumFerence 2 Pi R
-        float speedOnKmh = (circumFerence * avgrpm) / 100; // finding kmh
-        float speedOnMph = speedOnKmh;// * 0.62f; // converting kmh to mph
-        curSpeed = speedOnMph;
+        avgSlip /= 2;
+        smokeColor = new Color(1, 1, 1, Math.Abs(avgSlip));
+        main.startColor = new Color(1, 1, 1, Math.Abs(avgSlip));
+
+        curSpeed = forwardSpeed;
     }
 }
