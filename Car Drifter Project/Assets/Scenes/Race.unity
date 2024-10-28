@@ -163,6 +163,22 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.00000009787059
       objectReference: {fileID: 0}
+    - target: {fileID: 1664847927466507313, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
+      propertyPath: smokeFL
+      value: 
+      objectReference: {fileID: 1295740}
+    - target: {fileID: 1664847927466507313, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
+      propertyPath: smokeFR
+      value: 
+      objectReference: {fileID: 1295741}
+    - target: {fileID: 1664847927466507313, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
+      propertyPath: smokeRL
+      value: 
+      objectReference: {fileID: 1295739}
+    - target: {fileID: 1664847927466507313, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
+      propertyPath: smokeRR
+      value: 
+      objectReference: {fileID: 1295742}
     - target: {fileID: 4227893508771876605, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -84.81
@@ -212,6 +228,26 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
+--- !u!198 &1295739 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 3327081646871995830, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
+  m_PrefabInstance: {fileID: 1295738}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &1295740 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2534420672665639463, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
+  m_PrefabInstance: {fileID: 1295738}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &1295741 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2737708978784460868, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
+  m_PrefabInstance: {fileID: 1295738}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &1295742 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1791966429062729250, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
+  m_PrefabInstance: {fileID: 1295738}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &18001297
 GameObject:
   m_ObjectHideFlags: 0

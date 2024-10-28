@@ -15,7 +15,10 @@ public class CarControl : MonoBehaviour
     public AudioListener firstPersonA;
     public Camera thirdPerson;
     public AudioListener thirdPersonA;
-    public ParticleSystem smoke;
+    public ParticleSystem smokeRR;
+    public ParticleSystem smokeRL;
+    public ParticleSystem smokeFR;
+    public ParticleSystem smokeFL;
     public float curSpeed;
     public float brakeTime = 0.5f;
     private float nextBrake = 0f;
@@ -28,12 +31,18 @@ public class CarControl : MonoBehaviour
 
     WheelControl[] wheels;
     Rigidbody rigidBody;
-    ParticleSystem.MainModule main;
+    ParticleSystem.MainModule mainRR;
+    ParticleSystem.MainModule mainRL;
+    ParticleSystem.MainModule mainFR;
+    ParticleSystem.MainModule mainFL;
 
     // Start is called before the first frame update
     void Start()
     {
-        main = GetComponent<ParticleSystem>().main;
+        mainRR = smokeRR.main;
+        mainRL = smokeRL.main;
+        mainFR = smokeFR.main;
+        mainFL = smokeFL.main;
         rigidBody = GetComponent<Rigidbody>();
 
         // Adjust center of mass vertically, to help prevent the car from rolling
@@ -132,7 +141,7 @@ public class CarControl : MonoBehaviour
 
         // Use that to calculate how much torque is available 
         // (zero torque at top speed)
-        float currentMotorTorque = getTorque(forwardSpeed);
+        float currentMotorTorque = getTorque(GetComponent<SpeedDisplay>().speedCalc);
 
         // …and to calculate how much to steer 
         // (the car steers more gently at top speed)
@@ -145,7 +154,8 @@ public class CarControl : MonoBehaviour
 
 
         float avgtorque = 0f;
-        float avgSlip = 0f;
+        float avgSlipM = 0f;
+        float avgSlipS = 0f;
 
         foreach (var wheel in wheels)
         {
@@ -155,6 +165,12 @@ public class CarControl : MonoBehaviour
             if (wheel.steerable)
             {
                 wheel.WheelCollider.steerAngle = hInput * currentSteerRange;
+                avgSlipS += wh.sidewaysSlip;
+            }
+
+            if (wheel.motorized)
+            {
+                avgSlipM += (float)Math.Sqrt(Math.Pow(wh.forwardSlip, 2) + Math.Pow(wh.sidewaysSlip, 2));
             }
 
             if (isAccelerating)
@@ -170,7 +186,6 @@ public class CarControl : MonoBehaviour
                     {
                         wheel.WheelCollider.motorTorque = vInput * tractionControl(currentMotorTorque, wheel);
                     }
-                    avgSlip += wh.forwardSlip;
                     //if(Mathf.Abs(wheel.WheelCollider.rpm) > 1000)
                     //{
                     //    wheel.WheelCollider.motorTorque = 0;
@@ -194,9 +209,13 @@ public class CarControl : MonoBehaviour
             }
             avgtorque += wheel.WheelCollider.motorTorque;
         }
-        avgSlip /= 2;
-        smokeColor = new Color(1, 1, 1, Math.Abs(avgSlip));
-        main.startColor = new Color(1, 1, 1, Math.Abs(avgSlip));
+        avgSlipM /= 2;
+        avgSlipS /= 2;
+        smokeColor = new Color(1, 1, 1, Math.Abs(avgSlipM * avgSlipM));
+        mainRR.startColor = new Color(1, 1, 1, Math.Abs((0.75f) * avgSlipM * avgSlipM));
+        mainRL.startColor = new Color(1, 1, 1, Math.Abs((0.75f) * avgSlipM * avgSlipM));
+        mainFR.startColor = new Color(1, 1, 1, Math.Abs((0.75f) * avgSlipS * avgSlipS));
+        mainFL.startColor = new Color(1, 1, 1, Math.Abs((0.75f) * avgSlipS * avgSlipS));
 
         curSpeed = forwardSpeed;
     }

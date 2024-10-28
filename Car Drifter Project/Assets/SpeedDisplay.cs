@@ -11,6 +11,8 @@ public class SpeedDisplay : MonoBehaviour
     public Rigidbody car;
     public Text txt;
 
+    public float speedCalc;
+
     WheelControl[] wheels;
 
     // Start is called before the first frame update
@@ -39,5 +41,6 @@ public class SpeedDisplay : MonoBehaviour
         rWheels /= mWheels;
         var calcSpeed = 2 * Math.PI * rWheels * (rpms / 60f) * 2.2369;
         txt.text = Math.Abs(Math.Round(calcSpeed)).ToString();
+        speedCalc = (float)Math.Abs(calcSpeed);
     }
 }
