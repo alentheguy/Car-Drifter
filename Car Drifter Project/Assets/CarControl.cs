@@ -202,20 +202,26 @@ public class CarControl : MonoBehaviour
                 braking = Mathf.Abs(vInput) * antilockBrakeSystem(brakeTorque, wheel);
             }
             WheelFrictionCurve side_ = wheel.WheelCollider.sidewaysFriction;
-            side_.stiffness = 1f - (Mathf.Abs(wh.forwardSlip) / 2);
             if (Input.GetKey(KeyCode.LeftShift) && wheel.motorized)
             {
-                side_.stiffness /= 1.25f;
+                side_.stiffness = 0.7f;
+                wheel.WheelCollider.sidewaysFriction = side_;
+            }
+            else
+            {
+                side_.stiffness = 1.1f;
+                wheel.WheelCollider.sidewaysFriction = side_;
+
             }
             avgtorque += wheel.WheelCollider.motorTorque;
         }
         avgSlipM /= 2;
         avgSlipS /= 2;
         smokeColor = new Color(1, 1, 1, Math.Abs(avgSlipM * avgSlipM));
-        mainRR.startColor = new Color(1, 1, 1, Math.Abs((0.75f) * avgSlipM * avgSlipM));
-        mainRL.startColor = new Color(1, 1, 1, Math.Abs((0.75f) * avgSlipM * avgSlipM));
-        mainFR.startColor = new Color(1, 1, 1, Math.Abs((0.75f) * avgSlipS * avgSlipS));
-        mainFL.startColor = new Color(1, 1, 1, Math.Abs((0.75f) * avgSlipS * avgSlipS));
+        mainRR.startColor = new Color(1, 1, 1, Math.Abs((0.75f) * (float)Math.Pow(avgSlipM, 3)));
+        mainRL.startColor = new Color(1, 1, 1, Math.Abs((0.75f) * (float)Math.Pow(avgSlipM, 3)));
+        mainFR.startColor = new Color(1, 1, 1, Math.Abs((0.75f) * (float)Math.Pow(avgSlipS, 3)));
+        mainFL.startColor = new Color(1, 1, 1, Math.Abs((0.75f) * (float)Math.Pow(avgSlipS, 3)));
 
         curSpeed = forwardSpeed;
     }
