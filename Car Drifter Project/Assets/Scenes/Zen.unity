@@ -329,6 +329,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2115762755}
     m_Modifications:
+    - target: {fileID: 393275802472163007, guid: 71e65c5e8ebd4e44d8d9f0187df9b727, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -300
+      objectReference: {fileID: 0}
+    - target: {fileID: 393275802472163007, guid: 71e65c5e8ebd4e44d8d9f0187df9b727, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -190
+      objectReference: {fileID: 0}
     - target: {fileID: 3234291198233002370, guid: 71e65c5e8ebd4e44d8d9f0187df9b727, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -409,6 +417,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3625297705976220800, guid: 71e65c5e8ebd4e44d8d9f0187df9b727, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -300
+      objectReference: {fileID: 0}
+    - target: {fileID: 3625297705976220800, guid: 71e65c5e8ebd4e44d8d9f0187df9b727, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 190
+      objectReference: {fileID: 0}
     - target: {fileID: 4215022660993017905, guid: 71e65c5e8ebd4e44d8d9f0187df9b727, type: 3}
       propertyPath: m_Name
       value: Car UI
@@ -466,7 +482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -634,31 +650,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1468020313780331899, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 35.544617
+      value: 30.271362
       objectReference: {fileID: 0}
     - target: {fileID: 1468020313780331899, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 13.3143
+      value: 10.882945
       objectReference: {fileID: 0}
     - target: {fileID: 1468020313780331899, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.9507446
+      value: 4.7771606
       objectReference: {fileID: 0}
     - target: {fileID: 1468020313780331899, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9852044
+      value: 0.9107824
       objectReference: {fileID: 0}
     - target: {fileID: 1468020313780331899, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.12535976
+      value: 0.0033218826
       objectReference: {fileID: 0}
     - target: {fileID: 1468020313780331899, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.11592956
+      value: 0.4128707
       objectReference: {fileID: 0}
     - target: {fileID: 1468020313780331899, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.014751157
+      value: -0.0015058562
       objectReference: {fileID: 0}
     - target: {fileID: 1664847927466507313, guid: 2e632163f3ca059408c6de5ef212a1e9, type: 3}
       propertyPath: smoke

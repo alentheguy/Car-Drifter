@@ -24,4 +24,9 @@ public class SceneControl : MonoBehaviour
     {
         SceneManager.LoadScene("Edit");
     }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
 }
