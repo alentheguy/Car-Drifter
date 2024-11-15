@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CarControl : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class CarControl : MonoBehaviour
     public float braking = 0f;
     public bool accelerating = false;
     public Color smokeColor;
+    public float curStiffMot = 1.5f;
 
     WheelControl[] wheels;
     Rigidbody rigidBody;
@@ -39,6 +41,9 @@ public class CarControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        motorTorque = PlayerPrefs.GetFloat("engineTorque");
+        maxSpeed = PlayerPrefs.GetFloat("maxSpeed");
+
         mainRR = smokeRR.main;
         mainRL = smokeRL.main;
         mainFR = smokeFR.main;
@@ -65,6 +70,10 @@ public class CarControl : MonoBehaviour
         {
             returnedTorque = motorTorque;
             return motorTorque;
+        }
+        if (speed >= maxSpeed)
+        {
+            return 0;
         }
         returnedTorque = curTorque;
         return curTorque;
@@ -120,6 +129,7 @@ public class CarControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (Input.GetKeyDown(KeyCode.C))
         {
             firstPerson.enabled = !firstPerson.enabled;
@@ -204,12 +214,12 @@ public class CarControl : MonoBehaviour
             WheelFrictionCurve side_ = wheel.WheelCollider.sidewaysFriction;
             if (Input.GetKey(KeyCode.LeftShift) && wheel.motorized)
             {
-                side_.stiffness = 0.7f;
+                side_.stiffness = 0.7f * (1f - PlayerPrefs.GetFloat("driftFactor"));
                 wheel.WheelCollider.sidewaysFriction = side_;
             }
-            else
+            else if (wheel.motorized)
             {
-                side_.stiffness = 1.1f;
+                side_.stiffness = curStiffMot * (1f - PlayerPrefs.GetFloat("driftFactor"));
                 wheel.WheelCollider.sidewaysFriction = side_;
 
             }

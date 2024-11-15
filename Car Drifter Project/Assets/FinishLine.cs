@@ -9,9 +9,10 @@ public class FinishLine : MonoBehaviour
     public Text curTime;
     public Text winTime;
     public GameObject panel;
-    public int finished;
+    public int finished; //  1 -> in progress, 2 -> finished
     public float startTime;
     public float endTime;
+    public GameObject checkPoint;
     
     // Start is called before the first frame update
     void Start()
@@ -19,10 +20,11 @@ public class FinishLine : MonoBehaviour
         panel.SetActive(false);
         finished = 0;
         curTime.text = "0:00";
+        checkPoint.SetActive(false);
     }
     void OnTriggerEnter(Collider col)
     {
-        if (col.tag == "Player" && finished == 1)
+        if (col.tag == "Player" && finished == 1 && checkPoint.GetComponent<CheckPointScript>().passed)
         {
             finished = 2;
             endTime = Time.time - startTime;
@@ -31,6 +33,7 @@ public class FinishLine : MonoBehaviour
         {
             finished = 1;
             startTime = Time.time;
+            checkPoint.SetActive(true);
         }
     }
 
