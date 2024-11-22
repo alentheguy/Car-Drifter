@@ -16,12 +16,24 @@ public class StoreEditVars : MonoBehaviour
         torque.onEndEdit.AddListener(editTorque);
         torquePH.text = PlayerPrefs.GetFloat("engineTorque").ToString();
         speed.onEndEdit.AddListener(editSpeed);
-        speedPH.text = Math.Round(7.5 * Math.Pow(PlayerPrefs.GetFloat("maxSpeed"), 0.5461)).ToString();
+        float curSpeed = PlayerPrefs.GetFloat("maxSpeed");
+        if(curSpeed <= 84.69784)
+        {
+            speedPH.text = Math.Round(curSpeed).ToString();
+        }
+        else
+        {
+            speedPH.text = Math.Round(7.5 * Math.Pow(curSpeed, 0.5461)).ToString();
+        }
     }
 
     private void editTorque(string nums)
     {
         float motorTorque = float.Parse(nums);
+        if(motorTorque < 0)
+        {
+            motorTorque = 0;
+        }
         if(motorTorque > 2000)
         {
             motorTorque = 2000;
@@ -29,20 +41,29 @@ public class StoreEditVars : MonoBehaviour
         torque.text = "";
         PlayerPrefs.SetFloat("engineTorque", motorTorque);
         torquePH.text = PlayerPrefs.GetFloat("engineTorque").ToString();
-        Debug.Log("made change to engine: " + nums);
     }
 
     private void editSpeed(string nums)
     {
+        speed.text = "";
         float maxSpeedB = float.Parse(nums);
         if (maxSpeedB > 500)
         {
             maxSpeedB = 500;
         }
-        float maxSpeed = (float)Math.Pow(maxSpeedB / 7.5f, (1f / 0.5461f));
-        speed.text = "";
-        PlayerPrefs.SetFloat("maxSpeed", maxSpeed);
-        speedPH.text = Math.Round(7.5f * Math.Pow(PlayerPrefs.GetFloat("maxSpeed"), 0.5461f)).ToString();
-        Debug.Log("made change to speed: " + maxSpeed);
+        float maxSpeed;
+        if (maxSpeedB <= 84.69784)
+        {
+            maxSpeed = maxSpeedB;
+            PlayerPrefs.SetFloat("maxSpeed", maxSpeed);
+            speedPH.text = Math.Round(PlayerPrefs.GetFloat("maxSpeed")).ToString();
+        }
+        else
+        {
+            maxSpeed = (float)Math.Pow(maxSpeedB / 7.5f, (1f / 0.5461f));
+            PlayerPrefs.SetFloat("maxSpeed", maxSpeed);
+            speedPH.text = Math.Round(7.5f * Math.Pow(PlayerPrefs.GetFloat("maxSpeed"), 0.5461f)).ToString();
+        }
+        Debug.Log("speed now: " + maxSpeed);
     }
 }
