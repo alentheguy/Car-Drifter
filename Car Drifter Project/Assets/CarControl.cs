@@ -11,7 +11,7 @@ public class CarControl : MonoBehaviour
     public float maxSpeed = 1;
     public float steeringRange = 30;
     public float steeringRangeAtMaxSpeed = 10;
-    public float centreOfGravityOffset = 0;
+    public float centreOfGravityOffset = -0.2f;
     public Camera firstPerson;
     public AudioListener firstPersonA;
     public Camera thirdPerson;
@@ -23,7 +23,7 @@ public class CarControl : MonoBehaviour
     public float brakeTime = 0.5f;
     private float nextBrake = 0f;
     private float stopBrake = 0f;
-    public float curStiffMot = 1.5f;
+    public float curStiffMot = 2f;
 
     WheelControl[] wheels;
     Rigidbody rigidBody;
@@ -35,9 +35,9 @@ public class CarControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        motorTorque = PlayerPrefs.GetFloat("engineTorque");
+        motorTorque = PlayerPrefs.GetFloat("engineTorque", 500);
         brakeTorque = motorTorque * 0.4f;
-        float pulledSpeed = PlayerPrefs.GetFloat("maxSpeed");
+        float pulledSpeed = PlayerPrefs.GetFloat("maxSpeed", 200);
         pulledSpeed /= (30.46619f * (float)Math.Pow(motorTorque, 0.450991)) / 500;
         maxSpeed = pulledSpeed;
 
@@ -138,6 +138,17 @@ public class CarControl : MonoBehaviour
 
         float vInput = Input.GetAxis("Vertical");
         float hInput = Input.GetAxis("Horizontal");
+
+        float spin = rigidBody.angularVelocity.y;
+        if (Mathf.Sign(spin) != MathF.Sign(hInput) && spin > 1f && Mathf.Sign(vInput) == Mathf.Sign(1))
+        {
+            rigidBody.AddTorque(transform.up * hInput * 100 * (float)Math.Abs(Math.Pow(spin, 2)));
+        }
+        else
+        {
+            rigidBody.AddTorque(transform.up * hInput * 50 * vInput);
+            Debug.Log(hInput * 50 * vInput + " " + Time.time);
+        }
 
         // Calculate current speed in relation to the forward direction of the car
         // (this returns a negative number when traveling backwards)

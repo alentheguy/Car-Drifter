@@ -8,6 +8,8 @@ public class FinishLine : MonoBehaviour
 {
     public Text curTime;
     public Text winTime;
+    public Text highTime;
+    public Text youWinText;
     public GameObject panel;
     public int finished; //  1 -> in progress, 2 -> finished
     public float startTime;
@@ -65,9 +67,15 @@ public class FinishLine : MonoBehaviour
         } 
         else if (finished == 2)
         {
+            if (endTime < PlayerPrefs.GetFloat("highScore", int.MaxValue))
+            {
+                PlayerPrefs.SetFloat("highScore", endTime);
+                youWinText.text = "High Score!!!!!!";
+            }
             string win = convertTime(endTime);
             curTime.text = win;
             winTime.text = win;
+            highTime.text = convertTime(PlayerPrefs.GetFloat("highScore"));
             panel.SetActive(true);
 
         }

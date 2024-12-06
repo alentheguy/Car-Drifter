@@ -30,11 +30,11 @@ public class StoreEditVars : MonoBehaviour
     private void editTorque(string nums)
     {
         float motorTorque = float.Parse(nums);
-        if(motorTorque < 0)
+        if(motorTorque < 1)
         {
-            motorTorque = 0;
-        }
-        if(motorTorque > 2000)
+            motorTorque = 1;
+        } 
+        else if(motorTorque > 2000)
         {
             motorTorque = 2000;
         }
@@ -47,7 +47,11 @@ public class StoreEditVars : MonoBehaviour
     {
         speed.text = "";
         float maxSpeedB = float.Parse(nums);
-        if (maxSpeedB > 500)
+        if(maxSpeedB < 1)
+        {
+            maxSpeedB = 1;
+        }
+        else if (maxSpeedB > 500)
         {
             maxSpeedB = 500;
         }
