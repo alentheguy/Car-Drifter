@@ -14,9 +14,9 @@ public class StoreEditVars : MonoBehaviour
     private void Start()
     {
         torque.onEndEdit.AddListener(editTorque);
-        torquePH.text = PlayerPrefs.GetFloat("engineTorque").ToString();
+        torquePH.text = PlayerPrefs.GetFloat("engineTorque", 500).ToString();
         speed.onEndEdit.AddListener(editSpeed);
-        float curSpeed = PlayerPrefs.GetFloat("maxSpeed");
+        float curSpeed = PlayerPrefs.GetFloat("maxSpeed", 200);
         if(curSpeed <= 84.69784)
         {
             speedPH.text = Math.Round(curSpeed).ToString();

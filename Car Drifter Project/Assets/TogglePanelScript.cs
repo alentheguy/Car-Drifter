@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class QuitScript : MonoBehaviour
+public class TogglePanelScript : MonoBehaviour
 {
     public GameObject panel;
+    public GameObject otherButton;
 
     // Start is called before the first frame update
     void Start()
@@ -17,10 +18,14 @@ public class QuitScript : MonoBehaviour
     public void displayPanel()
     {
         panel.SetActive(true);
+        otherButton.GetComponent<Button>().enabled = false;
     }
 
     public void hidePanel()
     {
         panel.SetActive(false);
+        otherButton.GetComponent<Button>().enabled = true;
     }
+
+
 }

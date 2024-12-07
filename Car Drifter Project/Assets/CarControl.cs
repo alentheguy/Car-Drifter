@@ -147,7 +147,6 @@ public class CarControl : MonoBehaviour
         else
         {
             rigidBody.AddTorque(transform.up * hInput * 50 * vInput);
-            Debug.Log(hInput * 50 * vInput + " " + Time.time);
         }
 
         // Calculate current speed in relation to the forward direction of the car
@@ -211,10 +210,6 @@ public class CarControl : MonoBehaviour
                     {
                         wheel.WheelCollider.motorTorque = vInput * tractionControl(currentMotorTorque, wheel);
                     }
-                    //if(Mathf.Abs(wheel.WheelCollider.rpm) > 1000)
-                    //{
-                    //    wheel.WheelCollider.motorTorque = 0;
-                    //}
                 }
                 wheel.WheelCollider.brakeTorque = 0;
             }
